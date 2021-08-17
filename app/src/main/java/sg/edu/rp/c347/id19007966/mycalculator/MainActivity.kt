@@ -138,6 +138,7 @@ class MainActivity : AppCompatActivity() {
             binding.textViewDisplay.text = currentDisplayText
             ex1 = result
             ex2 = null
+            changeContainer = true
         }
     }
 
