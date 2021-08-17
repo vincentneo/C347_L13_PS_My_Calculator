@@ -13,7 +13,7 @@ import android.widget.Toast
 import sg.edu.rp.c347.id19007966.mycalculator.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    //
+
     // Considering that Kotlin synthetics is deprecated,
     // I thought it would be good to try the new view binding as recommended by Google.
     // https://developer.android.com/topic/libraries/view-binding/migration#kts
@@ -22,8 +22,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private var currentDisplayText = "0"
-    //private var lastOperation: Operator? = null
-    //private var expressions = ArrayList<ExpressionItem>()
 
     private var ex1: Double = 0.0
     private var ex2: Operator? = null
@@ -124,15 +122,3 @@ class MainActivity : AppCompatActivity() {
 
 }
 
-enum class Operator {
-    DIVISION,MULTIPLICATION,ADDITION,SUBTRACTION;
-
-    fun calculate(left: Double, right: Double): Double {
-        return when(this) {
-            DIVISION -> left / right
-            MULTIPLICATION -> left * right
-            ADDITION -> left + right
-            SUBTRACTION -> left - right
-        }
-    }
-}
