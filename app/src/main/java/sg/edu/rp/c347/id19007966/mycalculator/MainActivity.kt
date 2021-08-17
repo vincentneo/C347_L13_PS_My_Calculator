@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity() {
             currentDisplayText = "$result"
             binding.textViewDisplay.text = currentDisplayText
             ex1 = result
-            ex2 = null
+            //ex2 = null
             changeContainer = true
         }
     }
