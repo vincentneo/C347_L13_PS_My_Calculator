@@ -74,11 +74,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.textViewDisplay.text = currentDisplayText
+
         if (ex2 == null)  {
-            ex1 = currentDisplayText.toDouble()
+            ex1 = currentDisplayText.toDoubleOrNull() ?: 0.0
         }
         else {
-            ex3 = currentDisplayText.toDouble()
+            ex3 = currentDisplayText.toDoubleOrNull() ?: 0.0
         }
     }
 
@@ -103,6 +104,45 @@ class MainActivity : AppCompatActivity() {
             ex1 = result
             changeContainer = true
         }
+    }
+
+    fun enhancementButtons(view: View) {
+        val button = view as Button
+
+        when (button.id) {
+            binding.buttonNegateFlip.id -> {
+                if ('-' in currentDisplayText) {
+                    currentDisplayText = currentDisplayText.replace("-", "")
+                }
+                else {
+                    currentDisplayText = "-" + currentDisplayText
+                }
+
+                if (ex2 == null)  {
+                    ex1 = currentDisplayText.toDouble()
+                }
+                else {
+                    if (changeContainer) {
+                        ex1 = currentDisplayText.toDouble()
+                    }
+                    ex3 = currentDisplayText.toDouble()
+                }
+            }
+            binding.buttonPercent.id -> {
+                currentDisplayText.toDoubleOrNull()?.also { unwrappedNumber ->
+                    val number = unwrappedNumber / 100
+                    if (ex2 == null)  {
+                        ex1 = number
+                    }
+                    else {
+                        ex3 = number
+                    }
+                    currentDisplayText = "$number"
+                }
+            }
+        }
+
+        binding.textViewDisplay.text = currentDisplayText
     }
 
     fun shouldEqualsNow(view: View) {
