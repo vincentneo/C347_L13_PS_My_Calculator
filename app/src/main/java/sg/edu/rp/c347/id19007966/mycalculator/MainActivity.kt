@@ -21,8 +21,15 @@ class MainActivity : AppCompatActivity() {
 
     private var currentDisplayText = "0"
     private var calculatedValue = 0F
-    private var lastOperation: Operator? = null
-    private var expression = ArrayList<ExpressionItem>()
+    //private var lastOperation: Operator? = null
+    //private var expressions = ArrayList<ExpressionItem>()
+
+    private var ex1: Double = 0.0
+    private var ex2: Operator? = null
+    private var ex3: Double = 0.0
+
+    private var changeContainer = false
+
     private var saveToExpression = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,17 +52,27 @@ class MainActivity : AppCompatActivity() {
     fun clearDisplay(view: View) {
         currentDisplayText = "0"
         binding.textViewDisplay.text = currentDisplayText
+        ex1 = 0.0
+        ex2 = null
+        ex3 = 0.0
+        saveToExpression = false
+        //lastOperation = null
     }
 
     fun inputReceived(view: View) {
         val button = view as Button
         val title = button.text.toString()
 
-        if (saveToExpression && lastOperation != null) {
-            var item = ExpressionItem()
-            item.operator = lastOperation
-            expression.add(item)
-            saveToExpression = false
+        //if (saveToExpression && lastOperation != null) {
+//        if (ex2 == null) {
+//            var item = ExpressionItem()
+//            item.operator = lastOperation
+//            expressions.add(item)
+//            saveToExpression = false
+//        }
+        if (changeContainer) {
+            currentDisplayText = "0"
+            changeContainer = false
         }
 
         if (currentDisplayText.equals("0")) {
@@ -69,29 +86,91 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.textViewDisplay.text = currentDisplayText
+        if (ex2 == null)  {
+            ex1 = currentDisplayText.toDouble()
+        }
+        else {
+            ex3 = currentDisplayText.toDouble()
+        }
     }
 
     fun operationsReceived(view: View) {
         val button = view as Button
+//        if (!saveToExpression) {
+//            var item = ExpressionItem()
+//            item.number = currentDisplayText.toDouble()
+//            //expressions.add(item)
+//            saveToExpression = true
+//            currentDisplayText = "0"
+//        }
+        when (button.id) {
+            binding.buttonOperationAddition.id -> ex2 = Operator.ADDITION
+            binding.buttonOperationSubtract.id -> ex2 = Operator.SUBTRACTION
+            binding.buttonOperationDivide.id -> ex2 = Operator.DIVISION
+            binding.buttonOperationMultiply.id -> ex2 = Operator.MULTIPLICATION
+        }
+        changeContainer = true
+    }
+
+    fun doExpression() {
+        var result: Double = 0.0
+
+//        val count = expressions.size
+//
+//        if (count < 3) {
+//            return
+//        }
+//
+//        val ex1 = expressions.get(0)
+//        val ex2 = expressions.get(1)
+//        val ex3 = expressions.get(2)
+
+        //if (ex1.number != null && ex2.operator != null && ex3.number != null) {
+        if (ex1 != null && ex2 != null && ex3 != null) {
+            result = ex2!!.calculate(ex1!!, ex3!!)
+            //expressions.clear()
+            //var item = ExpressionItem()
+            //item.number = result
+            //expressions.add(item)
+            saveToExpression = true
+            //lastOperation = null
+            currentDisplayText = "$result"
+            binding.textViewDisplay.text = currentDisplayText
+            ex1 = result
+            ex2 = null
+        }
+    }
+
+    fun shouldEqualsNow(view: View) {
+        System.out.println(saveToExpression)
+        //System.out.println(expressions.size)
+        doExpression()
         if (!saveToExpression) {
             var item = ExpressionItem()
             item.number = currentDisplayText.toDouble()
-            expression.add(item)
-            saveToExpression = true
-            currentDisplayText = "0"
-        }
-        when (button.id) {
-            binding.buttonOperationAddition.id -> lastOperation = Operator.ADDITION
-            binding.buttonOperationSubtract.id -> lastOperation = Operator.SUBTRACTION
-            binding.buttonOperationDivide.id -> lastOperation = Operator.DIVISION
-            binding.buttonOperationMultiply.id -> lastOperation = Operator.MULTIPLICATION
+            //expressions.add(item)
+            //currentDisplayText = "0"
+            //doExpression()
         }
     }
 
 }
 
+enum class LastClick {
+    NUMBER, OPERATOR, EQUAL
+}
+
 enum class Operator {
-    DIVISION,MULTIPLICATION,ADDITION,SUBTRACTION
+    DIVISION,MULTIPLICATION,ADDITION,SUBTRACTION;
+
+    fun calculate(left: Double, right: Double): Double {
+        return when(this) {
+            DIVISION -> left / right
+            MULTIPLICATION -> left * right
+            ADDITION -> left + right
+            SUBTRACTION -> left - right
+        }
+    }
 }
 
 class ExpressionItem {
